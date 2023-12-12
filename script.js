@@ -44,32 +44,6 @@
 // 9 hourly blocks 
 
 
-// local storage of data 
-
-// const localStorageData = [
-//     {
-//     date: '08-12-2023',
-//     data: {
-//         9: '9am item',
-//         9: '9am item',
-//         10: '9am item',
-//         15: '9am item',
-//         16: '9am item',
-//         17: '9am item',
-//     }, 
-//     {
-//         date: '08-12-2023',
-//         data: {
-//             9: '9am item',
-//             9: '9am item',
-//             10: '9am item',
-//             15: '9am item',
-//             16: '9am item',
-//             17: '9am item',
-//         }
-//     } 
-// }]
-
 
 // const today = dayjs().format('DD-MM-YYY');
 
@@ -160,40 +134,93 @@
 /* <p id="currentDay" class="lead"></p> */
 
 const currentDate = dayjs().format('dddd, MMMM D, YYYY');
-const currentHour = dayjs().hour()
-console.log (currentDate);
+const currentHour = dayjs().hour();
 document.getElementById("currentDay").textContent = currentDate;
-const timeBlocks = document.querySelectorAll('.time-block');
+const timeBlocksContainer = document.querySelector('.container');
+var userEntry = JSON.parse(localStorage.getItem("workSchedule"));  
 
-// const availableHours = (9,10,11,12,13,14,15,16,17)
+// initialise local storage var 
 
-// have timeblock colors correspond to past,     present, future
-// get current time hour via dayjs
-// loop over all the timeblocks, conditionally assign past present or future class (see css) by comparing that timeblock's hour to the current hour
+var workSchedule = [
+    {
+        time: "9:00",
+        entry: "",
+        id: 9, 
+    },
+    {
+        time: "10:00",
+        entry: "",
+        id: 10, 
+    },
+    {
+        time: "11:00",
+        entry: "",
+        id: 11, 
+    },
+    {
+        time: "12:00",
+        entry: "",
+        id: 12,
+    },
+    {
+        time: "13:00",
+        entry: "",
+        id: 13,
+    },
+    {
+        time: "14:00",
+        entry: "",
+        id: 14, 
+    },
+    {
+        time: "15:00",
+        entry: "",
+        id: 15, 
+    },
+    {
+        time: "16:00",
+        entry: "",
+        id: 16, 
+    },
+    {
+        time: "17:00",
+        entry: "",
+        id: 17, 
+    },
 
-document.addEventListener('DOMContentLoaded', function(){
-    const timeBlocks = document.querySelectorAll('.time-block');
+]
 
-    timeBlocks.forEach(block=> {
-        const blockHour = parseInt(block.dataset.hour);
+// // generate rows 
 
-        if (blockHour < currentHour) {
-          block.classList.add('past');
-        } else if (blockHour === currentHour) {
-          block.classList.add('present');
+workSchedule.forEach((timeEntry) => {
+    const timeBlock = document.createElement('div');
+    timeBlock.classList.add ('time-block','row');
+    timeBlock.id = `${timeEntry.id}`;
+    timeBlock.innerHTML = `
+    <div class="hour col-sm-1">${timeEntry.time}</div>
+    <textarea id="${timeEntry.id}" class="col-sm-10">${timeEntry.entry}</textarea>
+    <button class="saveBtn col-sm-1" data-hour="${timeEntry.time}">
+        <i class="far fa-save"></i>
+    </button>`;
+    document.querySelector(".container").appendChild(timeBlock);
+});;
+
+
+
+// colour rows based on current hour 
+
+function updateColours() {
+    document.querySelectorAll(".time-block").forEach(function(timeBlock) {
+        timeBlock.classList.remove("past", "present", "future");
+        const blockHour = parseInt(timeBlock.id);
+        if (currentHour === blockHour) {
+            timeBlock.classList.add("present");
+        } else if (currentHour < blockHour) {
+            timeBlock.classList.add("future");
         } else {
-          block.classList.add('future');
+            timeBlock.classList.add("past");
         }
-    })
-})
+    });
+}
 
-
-// for (let i=9; i <= 17; i++){
-//     if (currentHour === i) {
-//         document.getElementById(i.toString()).classList.add("present");
-//     } else if (currentHour < i) {
-//         document.getElementById(i.toString()).classList.add("past");
-//     } else {
-//         document.getElementById(i.toString()).classList.add("future");
-//     }
-// };
+updateColours();
