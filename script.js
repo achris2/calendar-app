@@ -134,7 +134,7 @@
 /* <p id="currentDay" class="lead"></p> */
 
 const currentDate = dayjs().format('dddd, MMMM D, YYYY');
-const currentHour = dayjs().hour();
+const currentHour = 10;
 document.getElementById("currentDay").textContent = currentDate;
 const timeBlocksContainer = document.querySelector('.container');
 var userEntry = JSON.parse(localStorage.getItem("workSchedule"));  
